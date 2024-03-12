@@ -1,0 +1,43 @@
+﻿@page "/"
+@using Microsoft.Extensions.Localization
+@rendermode InteractiveServer
+@using DemoBlazorLocalization.Resources
+@inject IStringLocalizer<Registration> Localizer
+@implements IDisposable
+<div class="row">
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <label class="form-label">@Localizer["FirstName"]</label>
+            <input class="form-control" type="text" @bind="FirstName" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@Localizer["Surname"]</label>
+            <input class="form-control" type="text" @bind="Surname" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@Localizer["EmailAddress"]</label>
+            <input class="form-control" type="text" @bind="EmailAddress" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@Localizer["Password"]</label>
+            <input class="form-control" type="text" @bind="Password" />
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary">@Localizer["Save"]</button>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    string? FirstName;
+    string? Surname;
+    string? Password;
+    string? EmailAddress;
+
+    protected override void OnInitialized() => LanguageService.Notify += StateHasChanged;
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    => await LanguageService.LoadCulture(LanguageConstant.DefaultCulture);
+    public void Dispose() => LanguageService.Notify -= StateHasChanged;
+}

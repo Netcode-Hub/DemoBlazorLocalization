@@ -1,0 +1,38 @@
+﻿@rendermode InteractiveServer
+
+
+<span class="text-muted" style="margin-left:10px; margin-right:2px">Change Language</span>
+<select @onchange="ChangeLanguage" class="form-select d-flex align-content-end"
+        placeholder="Sele" style="width:100px">
+
+    <option selected>@SelectedCulture</option>
+    @if (SelectedCulture != "en-US")
+    {
+        <option value="en-US">en-US</option>
+    }
+    @if (SelectedCulture != "fr-FR")
+    {
+        <option value="fr-FR">fr-FR</option>
+    }
+    @if (SelectedCulture != "es-ES")
+    {
+        <option value="es-ES">es-ES</option>
+    }
+</select>
+@code{
+    string? SelectedCulture = LanguageConstant.DefaultCulture;
+    async void ChangeLanguage(ChangeEventArgs e)
+    {
+        SelectedCulture = e.Value!.ToString();
+        await LanguageService.ChangeCulture(SelectedCulture!);
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    => await GetCulture();
+
+    private async Task GetCulture()
+    {
+        string culture = (await LanguageService.GetCurrentCulture()!)!;
+        if (culture != null) SelectedCulture = culture;
+        StateHasChanged();
+    }
+}
